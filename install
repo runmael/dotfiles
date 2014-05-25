@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# This script assumes it is positioned in dotfiles directory
+
+DOT_DIR=$( cd $(dirname $0) ; pwd -P ) # absolute path to dotfiles directory
+
+# Takes source and target and creates link if it does not exist
+install_link() {
+    local s=$1
+    local t=$2
+
+    # if correct link exists
+    if [[ -L $t && $(readlink -f $t) == $(readlink -f $s) ]]; then
+        echo "Link already installed"
+        return 0
+    fi
+
+    ln --symbolic --no-target-directory --interactive --verbose $s $t
+}
+
+
+echo "Installing dotfiles..."
+
+echo "Installing (g)vim configuration files"
+install_link $DOT_DIR/vim/.vim $HOME/.vim
+install_link $DOT_DIR/vim/.vimrc $HOME/.vimrc
+install_link $DOT_DIR/vim/.gvimrc $HOME/.gvimrc
+
+echo "Installing xmonad configuration files"
+install_link $DOT_DIR/xmonad/.xmonad $HOME/.xmonad
+
+echo "Installing .bash files"
+install_link $DOT_DIR/bash/.bashrc $HOME/.bashrc
+#install_link $DOT_DIR/bash/bash_aliases $HOME/.bash_aliases
+#if [ ! -e $HOME/.bash_local ]; then
+#	echo "# Put settings specific for this machine here. Loaded by .bashrc" \
+#		> $HOME/.bash_local
+#	echo "$HOME/.bash_local created. Put machine specific settings here!" 
+#fi
+
+
+<<Currently_not_needed
+echo "Installing git completion"
+install_link $DOT_DIR/git/git-completion.bash $HOME/.git-completion.bash
+install_link $DOT_DIR/git/git-prompt.sh $HOME/.git-prompt.sh
+
+
+echo "Installing xrandr screen layout setup scripts"
+echo "This are just scripts, hook them where you want!"
+install_link $DOT_DIR/screenlayout $HOME/.screenlayout
+Currently_not_needed
+
+
+echo "Installation finished!"
+

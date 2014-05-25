@@ -1,0 +1,63 @@
+import XMonad
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.EZConfig(additionalKeys)
+import XMonad.Util.EZConfig
+import XMonad.Layout.NoBorders
+import XMonad.Util.NamedScratchpad
+import XMonad.Layout.Spacing
+import System.IO
+
+myManageHook = composeAll
+    [ --className =? "Claws-mail" --> doShift "6:mail"
+      title =? "ncmpcpp" --> doShift "8:music"
+    , title =? "vifm" --> doShift "5:vifm"
+    , className =? "Thunderbird" --> doShift "7:mail"
+    , className =? "Pidgin" --> doShift "6:pidgin"
+    , manageDocks
+    ]
+
+startup :: X ()
+startup = do
+    --spawn "claws-mail"
+    spawn "urxvt -e ncmpcpp"
+    spawn "urxvt -e vifm"
+    spawn "thunderbird"
+
+
+-- myLayoutHook = spacing 2 $ layoutHookdefaultConfig
+
+main = do
+    xmproc <- spawnPipe "/usr/bin/xmobar /home/petar/.xmobarrc"
+    xmonad $ defaultConfig
+        { terminal = myTerminal
+        , workspaces = myWorkspaces
+        , startupHook = startup
+        , normalBorderColor = myNormalBorderColor
+        , focusedBorderColor = myFocusedBorderColor
+        , manageHook = myManageHook <+> manageHook defaultConfig
+        , layoutHook = avoidStruts $ smartBorders $ spacing 2 $ layoutHook defaultConfig
+        , logHook = dynamicLogWithPP xmobarPP
+                        { ppOutput = hPutStrLn xmproc
+                        --, ppTitle = xmobarColor "#006600" "" . shorten 50
+                        -- , ppTitle = xmobarColor "#006677" "" . shorten 50
+                        , ppTitle = xmobarColor "#0088bb" "" . shorten 50
+                        , ppSort = fmap (.namedScratchpadFilterOutWorkspace)
+                                           $ ppSort defaultPP
+                        , ppLayout = const ""
+                        }
+        --, modMask = mod4Mask     -- Rebind Mod to the Windows key
+        } 
+
+myTerminal = "urxvt"
+myWorkspaces = ["1:misc", "2:dev", "3:www", "4:docs", "5:vifm", "6:pidgin", "7:mail", "8:music", "9:other"]
+--myNormalBorderColor = "#004444"
+--myNormalBorderColor = "#002244"
+myNormalBorderColor = "#334444"
+--myFocusedBorderColor = "#007711"
+--myFocusedBorderColor = "#339900"
+--myFocusedBorderColor = "#11ff00"
+--myFocusedBorderColor = "#118800"
+myFocusedBorderColor = "#dd7700"
+
