@@ -31,13 +31,12 @@ install_link $DOT_DIR/xmonad/.xmonad $HOME/.xmonad
 
 echo "Installing .bash files"
 install_link $DOT_DIR/bash/.bashrc $HOME/.bashrc
-#install_link $DOT_DIR/bash/bash_aliases $HOME/.bash_aliases
-#if [ ! -e $HOME/.bash_local ]; then
-#	echo "# Put settings specific for this machine here. Loaded by .bashrc" \
-#		> $HOME/.bash_local
-#	echo "$HOME/.bash_local created. Put machine specific settings here!" 
-#fi
 
+echo "Installing misc files"
+install_link $DOT_DIR/misc/.Xdefaults $HOME/.Xdefaults
+install_link $DOT_DIR/misc/.Xresources $HOME/.Xresources
+install_link $DOT_DIR/misc/.xinitrc $HOME/.xinitrc
+install_link $DOT_DIR/misc/.compton.conf $HOME/.compton.conf
 
 <<Currently_not_needed
 echo "Installing git completion"
